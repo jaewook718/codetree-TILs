@@ -63,7 +63,7 @@ for t in range(1, M+1):
 
         stun[closestIdx] = t + 1
 
-        while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]>0:
+        while is_inrange(lastX, lastY) and board[lastX][lastY] > 0:
             lastX += moveX
             lastY += moveY
 
