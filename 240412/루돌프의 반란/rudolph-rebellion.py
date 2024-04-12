@@ -1,3 +1,6 @@
+def is_inrange(x, y):
+    return 1 <= x and x <= N and 1 <= y and y <= N
+
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
 N, M, P, C, D = map(int, input().split())
@@ -84,70 +87,78 @@ for t in range(1, M+1):
                 is_alive[closetidx] = 0
 
         board[rudolf[0]][rudolf[1]] = -1
-    for i in range(1, P+1):
-        if is_alive[i] == 0 or stun[i] >= t:
+    for i in range(1, P + 1):
+        if not is_alive[i] or stun[i] >= t:
             continue
-        dist = (pos[i][0] - rudolf[0])**2 + (pos[i][1] - rudolf[1])**2
-        moveDir = -1
-        for k in range(4):
-            nx = pos[i][0] + dx[k]
-            ny = pos[i][1] + dy[k]
 
-            if not (1<=nx<=N and 1<=ny<=N) or board[nx][ny] > 0:
+        minDist = (pos[i][0] - rudolf[0]) ** 2 + (pos[i][1] - rudolf[1]) ** 2
+        moveDir = -1
+
+        for dir in range(4):
+            nx = pos[i][0] + dx[dir]
+            ny = pos[i][1] + dy[dir]
+
+            if not is_inrange(nx, ny) or board[nx][ny] > 0:
                 continue
 
-            tempdist = (nx - rudolf[0])**2 + (ny - rudolf[1])**2
-            if dist > tempdist:
-                moveDir = k
-                dist = tempdist
-        if moveDir == -1:
-            continue
+            dist = (nx - rudolf[0]) ** 2 + (ny - rudolf[1]) ** 2
+            if dist < minDist:
+                minDist = dist
+                moveDir = dir
 
-        nx = pos[i][0] + dx[moveDir]
-        ny = pos[i][1] + dy[moveDir]
-        if nx == rudolf[0] and ny == rudolf[1]:
-            stun[i] = t + 1
+        if moveDir != -1:
+            nx = pos[i][0] + dx[moveDir]
+            ny = pos[i][1] + dy[moveDir]
 
-            moveX = -dx[moveDir]
-            moveY = -dy[moveDir]
+            # 산타의 이동으로 충돌한 경우, 산타를 이동시키고 처리를 합니다.
+            if nx == rudolf[0] and ny == rudolf[1]:
+                stun[i] = t + 1
 
-            firstX = nx + moveX * D
-            firstY = ny + moveY * D
-            lastX, lastY = firstX, firstY
-            if D == 1:
-                points[i] += D
-            else:
-                while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY] > 0:
-                    lastX += moveX
-                    lastY += moveY
-                while lastX != firstY or lastY != firstY:
+                moveX = -dx[moveDir]
+                moveY = -dy[moveDir]
 
-                    beforeX = lastX - moveX
-                    beforeY = lastY - moveY
-                    if not (1<=beforeX<=N and 1<=beforeY<=N):
-                        break
+                firstX = nx + moveX * D
+                firstY = ny + moveY * D
+                lastX, lastY = firstX, firstY
 
-                    idx = board[beforeX][beforeY]
-
-                    if not (1<=lastX<=N and 1<=lastY<=N):
-                        is_alive[idx] = 0
-                    else:
-                        board[lastX][lastY] = board[beforeX][beforeY]
-                        pos[idx] = [lastX, lastY]
-
-                    lastX, lastY = beforeX, beforeY
-                points[i] += D
-                board[pos[i][0]][pos[i][1]] = 0
-                pos[i] = [firstX, firstY]
-                if 1<=firstX<=N and 1<=firstY<=N:
-                    board[firstX][firstY] = i
+                if D == 1:
+                    points[i] += D
                 else:
-                    is_alive[i] = 0
+                    # 만약 이동한 위치에 산타가 있을 경우, 연쇄적으로 이동이 일어납니다.
+                    while is_inrange(lastX, lastY) and board[lastX][lastY] > 0:
+                        lastX += moveX
+                        lastY += moveY
 
-        else:
-            board[pos[i][0]][pos[i][1]] = 0
-            pos[i] = [nx, ny]
-            board[nx][ny] = i
+                    # 연쇄적으로 충돌이 일어난 가장 마지막 위치에서 시작해,
+                    # 순차적으로 보드판에 있는 산타를 한칸씩 이동시킵니다.
+                    while lastX != firstX or lastY != firstY:
+                        beforeX = lastX - moveX
+                        beforeY = lastY - moveY
+
+                        if not is_inrange(beforeX, beforeY):
+                            break
+
+                        idx = board[beforeX][beforeY]
+
+                        if not is_inrange(lastX, lastY):
+                            is_alive[idx] = 0
+                        else:
+                            board[lastX][lastY] = board[beforeX][beforeY]
+                            pos[idx] = (lastX, lastY)
+
+                        lastX, lastY = beforeX, beforeY
+
+                    points[i] += D
+                    board[pos[i][0]][pos[i][1]] = 0
+                    pos[i] = (firstX, firstY)
+                    if is_inrange(firstX, firstY):
+                        board[firstX][firstY] = i
+                    else:
+                        is_alive[i] = 0
+            else:
+                board[pos[i][0]][pos[i][1]] = 0
+                pos[i] = (nx, ny)
+                board[nx][ny] = i
 
     for i in range(1, P+1):
         if is_alive[i]:
