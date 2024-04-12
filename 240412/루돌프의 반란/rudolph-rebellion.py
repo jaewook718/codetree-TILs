@@ -75,7 +75,7 @@ for t in range(1, M+1):
             if not (1<=lastX<N and 1<=lastY<=N):
                 is_alive[idx] = 0
             else:
-                board[lastX][lastY] = idx
+                board[lastX][lastY] = board[beforeX][beforeY]
                 pos[idx] = [lastX, lastY]
 
             lastX, lastY = beforeX, beforeY
@@ -87,7 +87,7 @@ for t in range(1, M+1):
         else:
             is_alive[closestIdx] = 0
 
-        board[rudolf[0]][rudolf[1]] = -1
+    board[rudolf[0]][rudolf[1]] = -1
     for i in range(1, P+1):
         if is_alive[i] == 0 or stun[i] >= t:
             continue
