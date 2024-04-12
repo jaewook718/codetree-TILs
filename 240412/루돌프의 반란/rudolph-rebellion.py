@@ -1,3 +1,5 @@
+def is_inrange(x, y):
+    return 1 <= x and x <= N and 1 <= y and y <= N
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
 N, M, P, C, D = map(int, input().split())
@@ -58,7 +60,8 @@ for t in range(1, M+1):
         firstX = closestX + moveX * C
         firstY = closestY + moveY * C
         lastX, lastY = firstX, firstY
-        stun[closestIdx] = t+1
+
+        stun[closestIdx] = t + 1
 
         while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]>0:
             lastX += moveX
