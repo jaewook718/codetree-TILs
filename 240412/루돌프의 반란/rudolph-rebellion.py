@@ -1,3 +1,5 @@
+def is_inrange(x, y):
+    return 1 <= x and x <= N and 1 <= y and y <= N
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
 N, M, P, C, D = map(int, input().split())
@@ -58,36 +60,41 @@ for t in range(1, M+1):
         firstX = closestX + moveX * C
         firstY = closestY + moveY * C
         lastX, lastY = firstX, firstY
-        stun[closestIdx] = t+1
 
-        while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]:
+        stun[closestIdx] = t + 1
+
+        # 만약 이동한 위치에 산타가 있을 경우, 연쇄적으로 이동이 일어납니다.
+        while is_inrange(lastX, lastY) and board[lastX][lastY] > 0:
             lastX += moveX
             lastY += moveY
 
-        while not(lastX == firstX and lastY == firstY):
+        # 연쇄적으로 충돌이 일어난 가장 마지막 위치에서 시작해,
+        # 순차적으로 보드판에 있는 산타를 한칸씩 이동시킵니다.
+        while not (lastX == firstX and lastY == firstY):
             beforeX = lastX - moveX
             beforeY = lastY - moveY
-            if not (1<=beforeX<=N and 1<=beforeY<=N):
+
+            if not is_inrange(beforeX, beforeY):
                 break
 
             idx = board[beforeX][beforeY]
 
-            if not (1<=lastX<N and 1<=lastY<=N):
+            if not is_inrange(lastX, lastY):
                 is_alive[idx] = 0
             else:
-                board[lastX][lastY] = idx
-                pos[idx] = [lastX, lastY]
+                board[lastX][lastY] = board[beforeX][beforeY]
+                pos[idx] = (lastX, lastY)
 
             lastX, lastY = beforeX, beforeY
 
         points[closestIdx] += C
-        pos[closestIdx] = [firstX, firstY]
-        if 1<=firstX<=N and 1<=firstY<=N:
+        pos[closestIdx] = (firstX, firstY)
+        if is_inrange(firstX, firstY):
             board[firstX][firstY] = closestIdx
         else:
             is_alive[closestIdx] = 0
 
-        board[rudolf[0]][rudolf[1]] = -1
+    board[rudolf[0]][rudolf[1]] = -1;
     for i in range(1, P+1):
         if is_alive[i] == 0 or stun[i] >= t:
             continue
