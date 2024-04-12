@@ -21,7 +21,7 @@ board[rudolf[0]][rudolf[1]] = -1
 
 
 for t in range(1, M+1):
-    closetidx, closetx, closety = 0, 100000, 100000
+    closestX, closestY, closestIdx = 10000, 10000, 0
 
     for i in range(1, P + 1):
         if not is_alive[i]:
