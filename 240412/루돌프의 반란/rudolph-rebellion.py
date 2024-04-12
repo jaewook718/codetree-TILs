@@ -67,10 +67,11 @@ for t in range(1, M+1):
             lastX += moveX
             lastY += moveY
 
-        while not(lastX == firstX and lastY == firstY):
+        while not (lastX == firstX and lastY == firstY):
             beforeX = lastX - moveX
             beforeY = lastY - moveY
-            if not (1<=beforeX<=N and 1<=beforeY<=N):
+
+            if not is_inrange(beforeX, beforeY):
                 break
 
             idx = board[beforeX][beforeY]
