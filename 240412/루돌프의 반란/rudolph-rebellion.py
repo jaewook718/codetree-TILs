@@ -23,70 +23,75 @@ board[rudolf[0]][rudolf[1]] = -1
 for t in range(1, M+1):
     closetidx, closetx, closety = 0, 100000, 100000
 
-    for i in range(1, P+1):
-        if is_alive[i] == 1:
-            closetdist = (rudolf[0] - closetx)**2 + (rudolf[1] - closety)**2
-            currentdist = (rudolf[0] - pos[i][0])**2 + (rudolf[1] - pos[i][1])**2
-            if currentdist < closetdist:
-                closetidx = i
-                closetx, closety = pos[closetidx]
-            elif currentdist == closetdist:
-                if closetx < pos[i][0]:
-                    closetidx = i
-                    closetx, closety = pos[closetidx]
-                elif closetx == pos[i][0]:
-                    if closety < pos[i][1]:
-                        closetidx = i
-                        closetx, closety = pos[closetidx]
+    for i in range(1, P + 1):
+        if not is_alive[i]:
+            continue
 
-    if closetidx:
+        currentBest = ((closestX - rudolf[0]) ** 2 + (closestY - rudolf[1]) ** 2, (-closestX, -closestY))
+        currentValue = ((pos[i][0] - rudolf[0]) ** 2 + (pos[i][1] - rudolf[1]) ** 2, (-pos[i][0], -pos[i][1]))
+
+        if currentValue < currentBest:
+            closestX, closestY = pos[i]
+            closestIdx = i
+
+        # 가장 가까운 산타의 방향으로 루돌프가 이동합니다.
+    if closestIdx:
         prevRudolf = rudolf
-        moveX, moveY = 0, 0
-        if closetx > rudolf[0]:
+        moveX = 0
+        if closestX > rudolf[0]:
             moveX = 1
-        elif closetx < rudolf[0]:
+        elif closestX < rudolf[0]:
             moveX = -1
-        if closety > rudolf[1]:
+
+        moveY = 0
+        if closestY > rudolf[1]:
             moveY = 1
-        elif closety < rudolf[1]:
+        elif closestY < rudolf[1]:
             moveY = -1
-        rudolf = [rudolf[0] + moveX, rudolf[1] + moveY]
+
+        rudolf = (rudolf[0] + moveX, rudolf[1] + moveY)
         board[prevRudolf[0]][prevRudolf[1]] = 0
 
-        if rudolf[0] == closetx and rudolf[1] == closety:
-            firstX = closetx + moveX * C
-            firstY = closety + moveY * C
-            lastX, lastY = firstX, firstY
-            stun[closetidx] = t+1
+        # 루돌프의 이동으로 충돌한 경우, 산타를 이동시키고 처리를 합니다.
+    if rudolf[0] == closestX and rudolf[1] == closestY:
+        firstX = closestX + moveX * C
+        firstY = closestY + moveY * C
+        lastX, lastY = firstX, firstY
 
-            while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]:
-                lastX += moveX
-                lastY += moveY
+        stun[closestIdx] = t + 1
 
-            while not(lastX == firstX and lastY == firstY):
-                beforeX = lastX - moveX
-                beforeY = lastY - moveY
-                if not (1<=beforeX<=N and 1<=beforeY<=N):
-                    break
+        # 만약 이동한 위치에 산타가 있을 경우, 연쇄적으로 이동이 일어납니다.
+        while is_inrange(lastX, lastY) and board[lastX][lastY] > 0:
+            lastX += moveX
+            lastY += moveY
 
-                idx = board[beforeX][beforeY]
+        # 연쇄적으로 충돌이 일어난 가장 마지막 위치에서 시작해,
+        # 순차적으로 보드판에 있는 산타를 한칸씩 이동시킵니다.
+        while not (lastX == firstX and lastY == firstY):
+            beforeX = lastX - moveX
+            beforeY = lastY - moveY
 
-                if not (1<=lastX<N and 1<=lastY<=N):
-                    is_alive[idx] = 0
-                else:
-                    board[lastX][lastY] = idx
-                    pos[idx] = [lastX, lastY]
+            if not is_inrange(beforeX, beforeY):
+                break
 
-                lastX, lastY = beforeX, beforeY
+            idx = board[beforeX][beforeY]
 
-            points[closetidx] += C
-            pos[closetidx] = [firstX, firstY]
-            if 1<=firstX<=N and 1<=firstY<=N:
-                board[firstX][firstY] = closetidx
+            if not is_inrange(lastX, lastY):
+                is_alive[idx] = 0
             else:
-                is_alive[closetidx] = 0
+                board[lastX][lastY] = board[beforeX][beforeY]
+                pos[idx] = (lastX, lastY)
 
-        board[rudolf[0]][rudolf[1]] = -1
+            lastX, lastY = beforeX, beforeY
+
+        points[closestIdx] += C
+        pos[closestIdx] = (firstX, firstY)
+        if is_inrange(firstX, firstY):
+            board[firstX][firstY] = closestIdx
+        else:
+            is_alive[closestIdx] = 0
+
+    board[rudolf[0]][rudolf[1]] = -1;
     for i in range(1, P + 1):
         if not is_alive[i] or stun[i] >= t:
             continue
