@@ -39,16 +39,19 @@ for t in range(1, M+1):
 
     if closestIdx:
         prevRudolf = rudolf
-        moveX, moveY = 0, 0
+        moveX = 0
         if closestX > rudolf[0]:
             moveX = 1
         elif closestX < rudolf[0]:
             moveX = -1
+
+        moveY = 0
         if closestY > rudolf[1]:
             moveY = 1
         elif closestY < rudolf[1]:
             moveY = -1
-        rudolf = [rudolf[0] + moveX, rudolf[1] + moveY]
+
+        rudolf = (rudolf[0] + moveX, rudolf[1] + moveY)
         board[prevRudolf[0]][prevRudolf[1]] = 0
 
     if rudolf[0] == closestX and rudolf[1] == closestY:
