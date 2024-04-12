@@ -22,15 +22,20 @@ for t in range(1, M+1):
 
     # 살아있는 포인트 중 루돌프에 가장 가까운 산타를 찾습니다.
     for i in range(1, P + 1):
-        if not is_alive[i]:
-            continue
-
-        currentBest = ((closestX - rudolf[0]) ** 2 + (closestY - rudolf[1]) ** 2, (-closestX, -closestY))
-        currentValue = ((pos[i][0] - rudolf[0]) ** 2 + (pos[i][1] - rudolf[1]) ** 2, (-pos[i][0], -pos[i][1]))
-
-        if currentValue < currentBest:
-            closestX, closestY = pos[i]
-            closestIdx = i
+        if is_alive[i] == 1:
+            closetdist = (rudolf[0] - closestX) ** 2 + (rudolf[1] - closestY) ** 2
+            currentdist = (rudolf[0] - pos[i][0]) ** 2 + (rudolf[1] - pos[i][1]) ** 2
+            if currentdist < closetdist:
+                closestIdx = i
+                closestX, closestY = pos[closestIdx]
+            elif currentdist == closetdist:
+                if closestX < pos[i][0]:
+                    closestIdx = i
+                    closestX, closestY = pos[closestIdx]
+                elif closestX == pos[i][0]:
+                    if closestY < pos[i][1]:
+                        closestIdx = i
+                        closestX, closestY = pos[closestIdx]
 
     if closestIdx:
         prevRudolf = rudolf
@@ -46,38 +51,38 @@ for t in range(1, M+1):
         rudolf = [rudolf[0] + moveX, rudolf[1] + moveY]
         board[prevRudolf[0]][prevRudolf[1]] = 0
 
-        if rudolf[0] == closestX and rudolf[1] == closestY:
-            firstX = closestX + moveX * C
-            firstY = closestY + moveY * C
-            lastX, lastY = firstX, firstY
-            stun[closestIdx] = t+1
+    if rudolf[0] == closestX and rudolf[1] == closestY:
+        firstX = closestX + moveX * C
+        firstY = closestY + moveY * C
+        lastX, lastY = firstX, firstY
+        stun[closestIdx] = t+1
 
-            while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]:
-                lastX += moveX
-                lastY += moveY
+        while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY]:
+            lastX += moveX
+            lastY += moveY
 
-            while not(lastX == firstX and lastY == firstY):
-                beforeX = lastX - moveX
-                beforeY = lastY - moveY
-                if not (1<=beforeX<=N and 1<=beforeY<=N):
-                    break
+        while not(lastX == firstX and lastY == firstY):
+            beforeX = lastX - moveX
+            beforeY = lastY - moveY
+            if not (1<=beforeX<=N and 1<=beforeY<=N):
+                break
 
-                idx = board[beforeX][beforeY]
+            idx = board[beforeX][beforeY]
 
-                if not (1<=lastX<N and 1<=lastY<=N):
-                    is_alive[idx] = 0
-                else:
-                    board[lastX][lastY] = idx
-                    pos[idx] = [lastX, lastY]
-
-                lastX, lastY = beforeX, beforeY
-
-            points[closestIdx] += C
-            pos[closestIdx] = [firstX, firstY]
-            if 1<=firstX<=N and 1<=firstY<=N:
-                board[firstX][firstY] = closestIdx
+            if not (1<=lastX<N and 1<=lastY<=N):
+                is_alive[idx] = 0
             else:
-                is_alive[closestIdx] = 0
+                board[lastX][lastY] = idx
+                pos[idx] = [lastX, lastY]
+
+            lastX, lastY = beforeX, beforeY
+
+        points[closestIdx] += C
+        pos[closestIdx] = [firstX, firstY]
+        if 1<=firstX<=N and 1<=firstY<=N:
+            board[firstX][firstY] = closestIdx
+        else:
+            is_alive[closestIdx] = 0
 
         board[rudolf[0]][rudolf[1]] = -1
     for i in range(1, P+1):
