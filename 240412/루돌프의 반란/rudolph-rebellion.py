@@ -76,11 +76,11 @@ for t in range(1, M+1):
 
             idx = board[beforeX][beforeY]
 
-            if not is_inrange(lastX, lastY):
+            if not (1<=lastX<=N and 1<=lastY<=N):
                 is_alive[idx] = 0
             else:
                 board[lastX][lastY] = board[beforeX][beforeY]
-                pos[idx] = (lastX, lastY)
+                pos[idx] = [lastX, lastY]
 
             lastX, lastY = beforeX, beforeY
 
