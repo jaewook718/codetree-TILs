@@ -84,7 +84,6 @@ for t in range(1, M+1):
                 is_alive[closetidx] = 0
 
         board[rudolf[0]][rudolf[1]] = -1
-
     for i in range(1, P+1):
         if is_alive[i] == 0 or stun[i] >= t:
             continue
@@ -106,41 +105,41 @@ for t in range(1, M+1):
 
         nx = pos[i][0] + dx[moveDir]
         ny = pos[i][1] + dy[moveDir]
-
         if nx == rudolf[0] and ny == rudolf[1]:
             stun[i] = t + 1
 
             firstX = nx - dx[moveDir] * D
             firstY = ny - dy[moveDir] * D
-
             lastX, lastY = firstX, firstY
-
-            while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY] > 0:
-                lastX -= dx[moveDir]
-                lastY -= dy[moveDir]
-            while not (lastX==firstX and lastY==firstY):
-
-                beforeX = lastX + dx[moveDir]
-                beforeY = lastY + dy[moveDir]
-                if not (1<=beforeX<=N and 1<=beforeY<=N):
-                    break
-
-                idx = board[beforeX][beforeY]
-
-                if not (1<=lastX<=N and 1<=lastY<=N):
-                    is_alive[idx] = 0
-                else:
-                    board[lastX][lastY] = idx
-                    pos[idx] = [lastX, lastY]
-
-                lastX, lastY = beforeX, beforeY
-            if 1<=firstX<=N and 1<=firstY<=N:
-                board[firstX][firstY] = i
+            if D == 1:
+                points[i] += 1
             else:
-                is_alive[i] = 0
-            points[i] += D
-            board[pos[i][0]][pos[i][1]] = 0
-            pos[i] = [firstX, firstY]
+                while 1<=lastX<=N and 1<=lastY<=N and board[lastX][lastY] > 0:
+                    lastX -= dx[moveDir]
+                    lastY -= dy[moveDir]
+                while not (lastX==firstX and lastY==firstY):
+
+                    beforeX = lastX + dx[moveDir]
+                    beforeY = lastY + dy[moveDir]
+                    if not (1<=beforeX<=N and 1<=beforeY<=N):
+                        break
+
+                    idx = board[beforeX][beforeY]
+
+                    if not (1<=lastX<=N and 1<=lastY<=N):
+                        is_alive[idx] = 0
+                    else:
+                        board[lastX][lastY] = idx
+                        pos[idx] = [lastX, lastY]
+
+                    lastX, lastY = beforeX, beforeY
+                if 1<=firstX<=N and 1<=firstY<=N:
+                    board[firstX][firstY] = i
+                else:
+                    is_alive[i] = 0
+                points[i] += D
+                board[pos[i][0]][pos[i][1]] = 0
+                pos[i] = [firstX, firstY]
         else:
             board[pos[i][0]][pos[i][1]] = 0
             pos[i] = [nx, ny]
