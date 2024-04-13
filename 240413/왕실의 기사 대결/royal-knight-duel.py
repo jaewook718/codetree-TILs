@@ -4,7 +4,7 @@ dy = [0, 1, 0, -1]
 
 
 def is_range(x, y):
-    return 0<=x<=L and 0<=y<=L
+    return 0<=x<L and 0<=y<L
 
 
 def check_wall(r, c, h, w):
@@ -127,6 +127,7 @@ for _ in range(N):
     knights.append([r-1, c-1, h, w, k])
 orders = [list(map(int, input().split())) for _ in range(Q)]
 is_live = [True for _ in range(N)]
+
 
 
 for idx, direction in orders:
