@@ -44,7 +44,7 @@ def push(idx, direction):
                     continue
                 tr, tc, th, tw, tk = knights[i]
 
-                if tr + th - 1 == r -1 and (c <= tc <= c+w-1 or c <= tc + tw-1 <= c+w-1):
+                if tr + th - 1 == r -1 and (tc<= c <=tc+tw-1 or tc<= c+w-1 <= tc+tw-1):
                     q.append(i)
                     is_moved[i] = True
 
@@ -60,7 +60,7 @@ def push(idx, direction):
                 if not is_live[i]:
                     continue
                 tr, tc, th, tw, tk = knights[i]
-                if tc == c+w and (r <= tr <= r+h-1 or r <= tr+th-1 <= r+h-1):
+                if tc == c+w and (tr<= r <=tr+th-1 or tr<= r+h-1<=tr+th-1):
                     q.append(i)
                     is_moved[i] = True
 
@@ -76,7 +76,7 @@ def push(idx, direction):
                 if not is_live[i]:
                     continue
                 tr, tc, th, tw, tk = knights[i]
-                if tr == r + h and (c <= tc <= c+w-1 or c <= tc + tw-1 <= c+w-1):
+                if tr == r + h and (tc<= c <=tc+tw-1 or tc<= c+w-1 <= tc+tw-1):
                     q.append(i)
                     is_moved[i] = True
 
@@ -92,7 +92,7 @@ def push(idx, direction):
                 if not is_live[i]:
                     continue
                 tr, tc, th, tw, tk = knights[i]
-                if tc + tw-1 == c - 1 and (r <= tr <= r+h-1 or r <= tr+th-1 <= r+h-1):
+                if tc + tw-1 == c - 1 and (tr<= r <=tr+th-1 or tr<= r+h-1<=tr+th-1):
                     q.append(i)
                     is_moved[i] = True
 
@@ -135,9 +135,6 @@ for idx, direction in orders:
     if not is_live[idx-1]:
         continue
     push(idx-1, direction)
-
-
-
 
 ans = 0
 for i in range(N):
