@@ -27,7 +27,7 @@ def push(idx, direction):
     is_moved= [False]*N
     is_moved[idx] = True
     q.append(idx)
-    temp = [[] for _ in range(L)]
+    temp = [[] for _ in range(N)]
     while q:
         idx = q.popleft()
         r, c, h, w, k = knights[idx]
@@ -43,6 +43,7 @@ def push(idx, direction):
                 if not is_live[i]:
                     continue
                 tr, tc, th, tw, tk = knights[i]
+
                 if tr + th - 1 == r -1 and (c <= tc <= c+w-1 or c <= tc + tw-1 <= c+w-1):
                     q.append(i)
                     is_moved[i] = True
@@ -101,6 +102,7 @@ def push(idx, direction):
 
     for i in range(N):
         if is_moved[i] and i != tmp:
+            # print(i, tmp)
             damage = check_trap(knights[i][0], knights[i][1], knights[i][2], knights[i][3])
             if damage >= knights[i][4]:
                 is_live[i] = False
@@ -129,9 +131,12 @@ orders = [list(map(int, input().split())) for _ in range(Q)]
 is_live = [True for _ in range(N)]
 
 
-
 for idx, direction in orders:
+    if not is_live[idx-1]:
+        continue
     push(idx-1, direction)
+
+
 
 
 ans = 0
