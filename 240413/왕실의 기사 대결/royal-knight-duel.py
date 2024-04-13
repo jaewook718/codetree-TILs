@@ -49,7 +49,7 @@ def push(idx, direction):
 
         elif direction == 1:
             temp[idx] = [r, c+1, h, w, k]
-            if not is_range(r, c+1):
+            if not is_range(r, c+w):
                 return
             if check_wall(r, c+1, h, w):
                 return
@@ -65,7 +65,7 @@ def push(idx, direction):
 
         elif direction == 2:
             temp[idx] = [r+1, c, h, w, k]
-            if not is_range(r + 1, c):
+            if not is_range(r + h, c):
                 return
             if check_wall(r+1, c, h, w):
                 return
@@ -132,6 +132,7 @@ is_live = [True for _ in range(N)]
 
 for idx, direction in orders:
     push(idx-1, direction)
+
 
 ans = 0
 for i in range(N):
