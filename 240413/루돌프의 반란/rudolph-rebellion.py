@@ -62,7 +62,7 @@ for t in range(1, M+1):
         stun[closestIdx] = t + 1
         while True:
             if not is_range(nextX, nextY):
-                is_live[board[prevX][prevY]] = False
+                is_live[prevIdx] = False
                 break
 
             if not board[nextX][nextY] > 0:
@@ -139,6 +139,7 @@ for t in range(1, M+1):
             board[pos[i][0]][pos[i][1]] = 0
             board[nx][ny] = i
             pos[i] = [nx, ny]
+
 
     for i in range(1, P+1):
         if is_live[i]:
